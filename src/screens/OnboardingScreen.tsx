@@ -188,18 +188,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
   },
   title: {
-    fontSize: Typography.fontSize.xxl,
-    fontWeight: Typography.fontWeight.bold,
-    color: Colors.text.primary,
+    fontFamily: 'Nunito Sans',
+    fontWeight: '700',
+    fontSize: 24,
+    lineHeight: 28.8, // 120% of 24px
+    letterSpacing: 0,
     textAlign: 'center',
+    color: '#000000',
     marginBottom: Spacing.md,
-    lineHeight: Typography.fontSize.xxl * Typography.lineHeight.tight,
   },
   subtitle: {
-    fontSize: Typography.fontSize.md,
-    color: Colors.text.secondary,
+    fontFamily: 'Nunito Sans',
+    fontWeight: '400',
+    fontSize: 14,
+    lineHeight: 21, // 150% of 14px
+    letterSpacing: 0,
     textAlign: 'center',
-    lineHeight: Typography.fontSize.md * Typography.lineHeight.relaxed,
+    color: '#545454',
     paddingHorizontal: Spacing.sm,
   },
   buttonContainer: {
@@ -207,23 +212,25 @@ const styles = StyleSheet.create({
   },
   nextButton: {
     marginBottom: Spacing.md,
-    width: 134,
+    width: 160, // Increased width to fit "Next" text properly
     height: 45,
     borderRadius: 50,
     paddingTop: 16,
-    paddingRight: 50,
+    paddingRight: 32, // Reduced padding to allow more space for text
     paddingBottom: 16,
-    paddingLeft: 50,
+    paddingLeft: 32, // Reduced padding to allow more space for text
     backgroundColor: '#0B3438',
     alignSelf: 'center',
   },
   skipButton: {
     alignSelf: 'center',
-    width: 31,
-    height: 24,
+    width: 'auto', // Auto width to fit text properly
+    minHeight: 24, // Minimum height but allow it to grow
     backgroundColor: 'transparent',
     borderWidth: 0,
-    padding: 0,
+    paddingVertical: 4, // Add some vertical padding
+    paddingHorizontal: 8, // Add some horizontal padding
+    minWidth: 31, // Minimum width as specified
   },
   skipButtonText: {
     fontFamily: 'Nunito Sans',
@@ -232,7 +239,7 @@ const styles = StyleSheet.create({
     lineHeight: 24, // 150% of 16px
     letterSpacing: 0,
     textAlign: 'center',
-    color: '#333333',
+    color: '#1a1a1a', // Darker color for better visibility
   },
 });
 
