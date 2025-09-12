@@ -147,20 +147,23 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   imageStyle: {
-    borderBottomLeftRadius: BorderRadius.xxl,
-    borderBottomRightRadius: BorderRadius.xxl,
+    // Remove the bottom border radius from here
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0.1)',
-    borderBottomLeftRadius: BorderRadius.xxl,
-    borderBottomRightRadius: BorderRadius.xxl,
+    // Remove the bottom border radius from here
   },
   content: {
     flex: 0.4,
     paddingHorizontal: Spacing.lg,
     paddingTop: Spacing.xl,
     justifyContent: 'space-between',
+    backgroundColor: Colors.background.primary,
+    // Add the curved top edges to the content section
+    borderTopLeftRadius: BorderRadius.xxl,
+    borderTopRightRadius: BorderRadius.xxl,
+    marginTop: -BorderRadius.xxl, // Overlap slightly to create seamless curve
   },
   indicatorContainer: {
     flexDirection: 'row',
