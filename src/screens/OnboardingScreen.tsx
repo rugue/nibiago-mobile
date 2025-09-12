@@ -101,6 +101,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
               variant="outline"
               size="medium"
               style={styles.skipButton}
+              textStyle={styles.skipButtonText}
             />
           </View>
         </View>
@@ -206,9 +207,32 @@ const styles = StyleSheet.create({
   },
   nextButton: {
     marginBottom: Spacing.md,
+    width: 134,
+    height: 45,
+    borderRadius: 50,
+    paddingTop: 16,
+    paddingRight: 50,
+    paddingBottom: 16,
+    paddingLeft: 50,
+    backgroundColor: '#0B3438',
+    alignSelf: 'center',
   },
   skipButton: {
     alignSelf: 'center',
+    width: 31,
+    height: 24,
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    padding: 0,
+  },
+  skipButtonText: {
+    fontFamily: 'Nunito Sans',
+    fontWeight: '400',
+    fontSize: 16,
+    lineHeight: 24, // 150% of 16px
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: '#333333',
   },
 });
 
