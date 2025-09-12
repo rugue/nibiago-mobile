@@ -28,7 +28,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
   return (
     <View style={styles.container}>
       <ImageBackground
-        source={require('../../assets/background.jpg')}
+        source={require('../../assets/nbiago-background.png')}
         style={styles.backgroundImage}
         resizeMode="cover"
       >
@@ -39,7 +39,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
           {/* Main Logo in Center */}
           <View style={styles.logoContainer}>
             <Image 
-              source={require('../../assets/nibiago-logo.png')}
+              source={require('../../assets/nbiago-logo3.png')}
               style={styles.mainLogo}
               resizeMode="contain"
             />
@@ -63,48 +63,56 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Colors.primary, // Fallback color in case image doesn't load
   },
   backgroundImage: {
     flex: 1,
     width: '100%',
     height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)', // Dark overlay for better text contrast
+    backgroundColor: 'rgba(0, 0, 0, 0.2)', // Lighter overlay to preserve image visibility
   },
   content: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: height * 0.1,
+    paddingVertical: height * 0.08, // Responsive padding
+    paddingHorizontal: width * 0.05, // Add horizontal padding for edge cases
+    width: '100%',
   },
   logoContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    maxWidth: '100%',
   },
   mainLogo: {
-    width: 120,
-    height: 120,
-    maxWidth: width * 0.3,
-    maxHeight: width * 0.3,
+    width: Math.min(width * 0.4, 160), // Responsive sizing with max limit
+    height: Math.min(width * 0.4, 160),
+    maxWidth: '80%', // Ensure it doesn't overflow on small screens
+    maxHeight: '40%', // Limit height for very tall screens
   },
   brandContainer: {
     alignItems: 'center',
-    marginBottom: height * 0.05,
+    marginBottom: height * 0.03, // Responsive bottom margin
+    maxWidth: '100%',
   },
   fromText: {
-    fontSize: Typography.fontSize.md,
+    fontSize: Math.min(Typography.fontSize.md, width * 0.04), // Responsive font size
     color: Colors.text.inverse,
     marginBottom: Spacing.sm,
-    opacity: 0.8,
+    opacity: 0.9,
     textAlign: 'center',
+    fontWeight: Typography.fontWeight.regular,
   },
   brandLogo: {
-    width: 150,
-    height: 40,
-    maxWidth: width * 0.4,
+    width: Math.min(width * 0.4, 150), // Responsive sizing
+    height: Math.min(width * 0.1, 40),
+    maxWidth: '80%', // Ensure it doesn't overflow
   },
 });
 
