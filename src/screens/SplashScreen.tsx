@@ -5,8 +5,8 @@ import {
   StyleSheet,
   Image,
   Dimensions,
+  ImageBackground,
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import Colors from '../constants/Colors';
 import { Typography, Spacing } from '../constants/Layout';
 
@@ -27,26 +27,35 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
 
   return (
     <View style={styles.container}>
-      <LinearGradient
-        colors={[Colors.primary, Colors.primaryDark]}
-        style={styles.gradient}
+      <ImageBackground
+        source={require('../../assets/background.jpg')}
+        style={styles.backgroundImage}
+        resizeMode="cover"
       >
+        {/* Dark overlay for better contrast */}
+        <View style={styles.overlay} />
+        
         <View style={styles.content}>
-          {/* Logo Container */}
+          {/* Main Logo in Center */}
           <View style={styles.logoContainer}>
-            {/* Since we don't have the exact logo, I'll create a text-based logo */}
-            <View style={styles.logoShape}>
-              <Text style={styles.logoText}>n</Text>
-            </View>
+            <Image 
+              source={require('../../assets/nibiago-logo.png')}
+              style={styles.mainLogo}
+              resizeMode="contain"
+            />
           </View>
           
-          {/* Brand Text */}
+          {/* Bottom Brand Section */}
           <View style={styles.brandContainer}>
-            <Text style={styles.brandText}>From</Text>
-            <Text style={styles.brandName}>nibiago</Text>
+            <Text style={styles.fromText}>from</Text>
+            <Image 
+              source={require('../../assets/nibiago-lemon.png')}
+              style={styles.brandLogo}
+              resizeMode="contain"
+            />
           </View>
         </View>
-      </LinearGradient>
+      </ImageBackground>
     </View>
   );
 };
@@ -55,53 +64,47 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  gradient: {
+  backgroundImage: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)', // Dark overlay for better text contrast
+  },
+  content: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: height * 0.1,
+  },
+  logoContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  content: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  logoContainer: {
-    marginBottom: height * 0.15, // Dynamic spacing based on screen height
-  },
-  logoShape: {
-    width: 80,
-    height: 80,
-    borderRadius: 20,
-    backgroundColor: Colors.accent,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  logoText: {
-    fontSize: Typography.fontSize.display,
-    fontWeight: Typography.fontWeight.bold,
-    color: Colors.primary,
+  mainLogo: {
+    width: 120,
+    height: 120,
+    maxWidth: width * 0.3,
+    maxHeight: width * 0.3,
   },
   brandContainer: {
     alignItems: 'center',
+    marginBottom: height * 0.05,
   },
-  brandText: {
+  fromText: {
     fontSize: Typography.fontSize.md,
     color: Colors.text.inverse,
-    marginBottom: Spacing.xs,
+    marginBottom: Spacing.sm,
     opacity: 0.8,
+    textAlign: 'center',
   },
-  brandName: {
-    fontSize: Typography.fontSize.xxl,
-    fontWeight: Typography.fontWeight.bold,
-    color: Colors.text.inverse,
-    letterSpacing: 1,
+  brandLogo: {
+    width: 150,
+    height: 40,
+    maxWidth: width * 0.4,
   },
 });
 
