@@ -4,6 +4,15 @@ export const Colors = {
   primaryLight: '#A8D5AA',
   primaryDark: '#1B5E20',
   
+  // Authentication header color
+  authHeader: '#0F3737', // New color for auth screen headers
+  
+  // Button colors
+  buttonPrimary: '#0B3438', // Primary button background
+  buttonPrimaryText: '#DCEC64', // Primary button text
+  buttonAccent: '#DCEC64', // Accent button background (Continue button)
+  buttonAccentText: '#0B3438', // Accent button text
+  
   // Accent Colors
   accent: '#CDDC39', // Lime green from logo
   accentLight: '#F0F4C3',

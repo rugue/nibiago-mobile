@@ -8,6 +8,9 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -88,16 +91,26 @@ const CreateAccountScreen: React.FC = () => {
         >
           <Ionicons name="arrow-back" size={24} color={Colors.white} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>nibia</Text>
+        <Image 
+          source={require('../../../assets/nibia.png')}
+          style={styles.headerLogo}
+          resizeMode="contain"
+        />
         <View style={styles.headerSpacer} />
       </View>
 
-      <ScrollView 
-        style={styles.content} 
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
+      <KeyboardAvoidingView 
+        style={styles.keyboardAvoidingView}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
       >
-        <View style={styles.formContainer}>
+        <ScrollView 
+          style={styles.content} 
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={styles.scrollContent}
+        >
+          <View style={styles.formContainer}>
           <Text style={styles.title}>Create an Account</Text>
           <TouchableOpacity onPress={handleSignInRedirect}>
             <Text style={styles.subtitle}>
@@ -111,7 +124,7 @@ const CreateAccountScreen: React.FC = () => {
               style={styles.socialButton} 
               onPress={handleGoogleSignUp}
             >
-              <Ionicons name="logo-google" size={20} color="#DB4437" />
+              <Ionicons name="logo-google" size={20} color="#4285F4" />
               <Text style={styles.socialButtonText}>Continue with Google</Text>
             </TouchableOpacity>
 
@@ -181,7 +194,6 @@ const CreateAccountScreen: React.FC = () => {
                   keyboardType="email-address"
                   autoCapitalize="none"
                   autoCorrect={false}
-                  leftIcon="mail-outline"
                 />
               )}
             />
@@ -198,7 +210,6 @@ const CreateAccountScreen: React.FC = () => {
                   onBlur={onBlur}
                   error={errors.phone?.message}
                   keyboardType="phone-pad"
-                  leftIcon="call-outline"
                 />
               )}
             />
@@ -230,7 +241,6 @@ const CreateAccountScreen: React.FC = () => {
                   onBlur={onBlur}
                   error={errors.password?.message}
                   isPassword={true}
-                  leftIcon="lock-closed-outline"
                 />
               )}
             />
@@ -247,7 +257,6 @@ const CreateAccountScreen: React.FC = () => {
                   onBlur={onBlur}
                   error={errors.confirmPassword?.message}
                   isPassword={true}
-                  leftIcon="lock-closed-outline"
                 />
               )}
             />
@@ -257,8 +266,9 @@ const CreateAccountScreen: React.FC = () => {
           <Button
             title={isLoading ? 'Creating Account...' : 'Sign up'}
             onPress={handleSubmit(onSubmit)}
-            disabled={!isValid || isLoading}
+            disabled={isLoading}
             style={styles.submitButton}
+            variant="primary"
           />
           {isLoading && (
             <View style={styles.loadingContainer}>
@@ -270,6 +280,7 @@ const CreateAccountScreen: React.FC = () => {
           )}
         </View>
       </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -277,21 +288,31 @@ const CreateAccountScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.authHeader,
+  },
+  keyboardAvoidingView: {
+    flex: 1,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.md,
-    backgroundColor: Colors.primary,
+    paddingTop: Spacing.lg, // Add more top padding to prevent clipping
+    paddingBottom: Spacing.md,
+    backgroundColor: Colors.authHeader,
+    minHeight: 80, // Ensure minimum height for header
   },
   backButton: {
     width: 40,
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  headerLogo: {
+    width: 80,
+    height: 30,
+    resizeMode: 'contain',
   },
   headerTitle: {
     fontSize: 20,
@@ -308,10 +329,14 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
   },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: Spacing.xxl, // Extra padding at bottom for keyboard
+  },
   formContainer: {
     paddingHorizontal: Spacing.lg,
     paddingTop: Spacing.xl,
-    paddingBottom: Spacing.xxl,
+    paddingBottom: Spacing.lg, // Reduced since scrollContent handles bottom padding
   },
   title: {
     fontSize: 24,
@@ -319,12 +344,14 @@ const styles = StyleSheet.create({
     color: Colors.text.primary,
     textAlign: 'center',
     marginBottom: Spacing.xs,
+    fontFamily: 'Nunito Sans'
   },
   subtitle: {
     fontSize: 14,
     color: Colors.text.secondary,
     textAlign: 'center',
     marginBottom: Spacing.lg,
+    fontFamily: 'Nunito Sans'
   },
   signInLink: {
     color: Colors.primary,
@@ -349,6 +376,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.text.primary,
     fontWeight: '500',
+    fontFamily: 'Nunito Sans'
   },
   divider: {
     flexDirection: 'row',

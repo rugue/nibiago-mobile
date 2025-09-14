@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Image,
 } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -82,7 +83,7 @@ const SignInScreen: React.FC = () => {
         >
           <Ionicons name="arrow-back" size={24} color={Colors.white} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>nibia</Text>
+        <Image source={require('../../../assets/nibia.png')} style={styles.headerLogo} />
         <View style={styles.headerSpacer} />
       </View>
 
@@ -201,7 +202,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.md,
-    backgroundColor: Colors.primary,
+    paddingTop: Spacing.xl,
+    backgroundColor: Colors.authHeader,
   },
   backButton: {
     width: 40,
@@ -209,11 +211,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: Colors.accent,
-    textAlign: 'center',
+  headerLogo: {
+    width: 80,
+    height: 30,
+    resizeMode: 'contain',
   },
   headerSpacer: {
     width: 40,

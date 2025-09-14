@@ -105,7 +105,7 @@ const Button: React.FC<ButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    borderRadius: BorderRadius.lg,
+    borderRadius: BorderRadius.pill, // More oval/rounded button
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
   
   // Variants
   primary: {
-    backgroundColor: Colors.button.primary,
+    backgroundColor: Colors.buttonPrimary,
   },
   secondary: {
     backgroundColor: Colors.button.secondary,
@@ -140,10 +140,10 @@ const styles = StyleSheet.create({
   outline: {
     backgroundColor: 'transparent',
     borderWidth: 2,
-    borderColor: Colors.button.primary,
+    borderColor: Colors.buttonPrimary,
   },
   accent: {
-    backgroundColor: Colors.accent,
+    backgroundColor: Colors.buttonAccent,
   },
   disabled: {
     backgroundColor: Colors.button.disabled,
@@ -166,16 +166,16 @@ const styles = StyleSheet.create({
   
   // Text colors
   primaryText: {
-    color: Colors.button.primaryText,
+    color: Colors.buttonPrimaryText,
   },
   secondaryText: {
     color: Colors.button.secondaryText,
   },
   outlineText: {
-    color: Colors.button.primary,
+    color: Colors.buttonPrimary,
   },
   accentText: {
-    color: Colors.primary,
+    color: Colors.buttonAccentText,
   },
   disabledText: {
     color: Colors.button.disabledText,

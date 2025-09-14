@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#F8F9FA',
-    borderRadius: 12,
+    borderRadius: 25, // More oval/rounded input fields
     paddingHorizontal: Spacing.md,
     height: 50,
     borderWidth: 1,
