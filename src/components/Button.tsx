@@ -13,7 +13,7 @@ import { Typography, BorderRadius, Spacing } from '../constants/Layout';
 interface ButtonProps {
   title: string;
   onPress: () => void;
-  variant?: 'primary' | 'secondary' | 'outline';
+  variant?: 'primary' | 'secondary' | 'outline' | 'accent';
   size?: 'small' | 'medium' | 'large';
   loading?: boolean;
   disabled?: boolean;
@@ -41,6 +41,9 @@ const Button: React.FC<ButtonProps> = ({
       case 'outline':
         baseStyle.push(styles.outline);
         break;
+      case 'accent':
+        baseStyle.push(styles.accent);
+        break;
       default:
         baseStyle.push(styles.primary);
     }
@@ -65,6 +68,9 @@ const Button: React.FC<ButtonProps> = ({
         break;
       case 'outline':
         baseStyle.push(styles.outlineText);
+        break;
+      case 'accent':
+        baseStyle.push(styles.accentText);
         break;
       default:
         baseStyle.push(styles.primaryText);
@@ -136,6 +142,9 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: Colors.button.primary,
   },
+  accent: {
+    backgroundColor: Colors.accent,
+  },
   disabled: {
     backgroundColor: Colors.button.disabled,
     borderColor: Colors.button.disabled,
@@ -164,6 +173,9 @@ const styles = StyleSheet.create({
   },
   outlineText: {
     color: Colors.button.primary,
+  },
+  accentText: {
+    color: Colors.primary,
   },
   disabledText: {
     color: Colors.button.disabledText,

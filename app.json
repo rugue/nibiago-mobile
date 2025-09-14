@@ -1,8 +1,9 @@
 {
   "expo": {
-    "name": "nibiago-mobile",
+    "name": "Forage Stores",
     "slug": "nibiago-mobile",
     "version": "1.0.0",
+    "platforms": ["ios", "android"],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -10,18 +11,21 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#2E7D32"
     },
+    "scheme": "nibiago-mobile",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.creativeferry.nibiago"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#2E7D32"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.creativeferry.nibiago"
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -1,0 +1,257 @@
+import axios, { AxiosInstance, AxiosError } from 'axios';
+import * as SecureStore from 'expo-secure-store';
+import {
+  CreateAccountRequest,
+  CreateAccountResponse,
+  SelectAccountTypeRequest,
+  SelectAccountTypeResponse,
+  VerifyEmailRequest,
+  VerifyEmailResponse,
+  LoginRequest,
+  LoginResponse,
+  ApiError
+} from '../types/auth';
+
+// Constants
+const BASE_URL = 'https://forage-stores-backend.onrender.com';
+const ACCESS_TOKEN_KEY = 'nibiago_access_token';
+const TEMP_TOKEN_KEY = 'nibiago_temp_token';
+const USER_KEY = 'nibiago_user';
+
+// Create axios instance
+const apiClient: AxiosInstance = axios.create({
+  baseURL: BASE_URL,
+  timeout: 30000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Request interceptor to add tokens
+apiClient.interceptors.request.use(
+  async (config) => {
+    try {
+      const accessToken = await SecureStore.getItemAsync(ACCESS_TOKEN_KEY);
+      const tempToken = await SecureStore.getItemAsync(TEMP_TOKEN_KEY);
+      
+      if (accessToken) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
+      } else if (tempToken) {
+        config.headers.Authorization = `Bearer ${tempToken}`;
+      }
+    } catch (error) {
+      console.error('Error getting tokens from SecureStore:', error);
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Response interceptor to handle errors
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError) => {
+    const responseData = error.response?.data as any;
+    const apiError: ApiError = {
+      message: responseData?.message || error.message || 'An error occurred',
+      statusCode: error.response?.status || 500,
+      error: responseData?.error || 'Unknown Error'
+    };
+    return Promise.reject(apiError);
+  }
+);
+
+// SecureStore utilities
+export const SecureStorage = {
+  async setAccessToken(token: string): Promise<void> {
+    await SecureStore.setItemAsync(ACCESS_TOKEN_KEY, token);
+  },
+
+  async getAccessToken(): Promise<string | null> {
+    return await SecureStore.getItemAsync(ACCESS_TOKEN_KEY);
+  },
+
+  async setTempToken(token: string): Promise<void> {
+    await SecureStore.setItemAsync(TEMP_TOKEN_KEY, token);
+  },
+
+  async getTempToken(): Promise<string | null> {
+    return await SecureStore.getItemAsync(TEMP_TOKEN_KEY);
+  },
+
+  async setUser(user: any): Promise<void> {
+    await SecureStore.setItemAsync(USER_KEY, JSON.stringify(user));
+  },
+
+  async getUser(): Promise<any | null> {
+    const userStr = await SecureStore.getItemAsync(USER_KEY);
+    return userStr ? JSON.parse(userStr) : null;
+  },
+
+  async clearAccessToken(): Promise<void> {
+    await SecureStore.deleteItemAsync(ACCESS_TOKEN_KEY);
+  },
+
+  async clearTempToken(): Promise<void> {
+    await SecureStore.deleteItemAsync(TEMP_TOKEN_KEY);
+  },
+
+  async clearUser(): Promise<void> {
+    await SecureStore.deleteItemAsync(USER_KEY);
+  },
+
+  async clearAll(): Promise<void> {
+    await Promise.all([
+      this.clearAccessToken(),
+      this.clearTempToken(),
+      this.clearUser(),
+    ]);
+  },
+};
+
+// Authentication API calls
+export const AuthAPI = {
+  async createAccount(data: CreateAccountRequest): Promise<CreateAccountResponse> {
+    const response = await apiClient.post<CreateAccountResponse>('/auth/create-account', data);
+    
+    // Store temp token and user data
+    await SecureStorage.setTempToken(response.data.tempToken);
+    await SecureStorage.setUser(response.data.user);
+    
+    return response.data;
+  },
+
+  async selectAccountType(data: SelectAccountTypeRequest): Promise<SelectAccountTypeResponse> {
+    const response = await apiClient.post<SelectAccountTypeResponse>('/auth/select-account-type', data);
+    
+    // Update user data
+    await SecureStorage.setUser(response.data.user);
+    
+    return response.data;
+  },
+
+  async verifyEmail(data: VerifyEmailRequest): Promise<VerifyEmailResponse> {
+    const response = await apiClient.post<VerifyEmailResponse>('/auth/verify-email-code', data);
+    
+    // Clear temp token and store access token
+    await SecureStorage.clearTempToken();
+    await SecureStorage.setAccessToken(response.data.accessToken);
+    await SecureStorage.setUser(response.data.user);
+    
+    return response.data;
+  },
+
+  async login(data: LoginRequest): Promise<LoginResponse> {
+    const response = await apiClient.post<LoginResponse>('/auth/login', data);
+    
+    // Store access token and user data
+    await SecureStorage.setAccessToken(response.data.accessToken);
+    await SecureStorage.setUser(response.data.user);
+    
+    return response.data;
+  },
+
+  async logout(): Promise<void> {
+    try {
+      // You might want to call a logout endpoint here if your API has one
+      // await apiClient.post('/auth/logout');
+    } catch (error) {
+      console.error('Logout API error:', error);
+    } finally {
+      // Always clear local storage
+      await SecureStorage.clearAll();
+    }
+  },
+
+  async refreshToken(): Promise<void> {
+    // Implement token refresh logic if your API supports it
+    // This would be called when the access token expires
+    try {
+      // const response = await apiClient.post('/auth/refresh-token');
+      // await SecureStorage.setAccessToken(response.data.accessToken);
+    } catch (error) {
+      console.error('Token refresh failed:', error);
+      // If refresh fails, logout the user
+      await this.logout();
+      throw error;
+    }
+  },
+
+  async checkAuthStatus(): Promise<{ isAuthenticated: boolean; user: any | null }> {
+    try {
+      const accessToken = await SecureStorage.getAccessToken();
+      const user = await SecureStorage.getUser();
+      
+      return {
+        isAuthenticated: !!accessToken && !!user,
+        user: user,
+      };
+    } catch (error) {
+      console.error('Error checking auth status:', error);
+      return {
+        isAuthenticated: false,
+        user: null,
+      };
+    }
+  }
+};
+
+// Utility functions
+export const formatPhoneNumber = (phone: string): string => {
+  // Format phone number for Nigerian format
+  const cleaned = phone.replace(/\D/g, '');
+  
+  if (cleaned.length === 10) {
+    // Add country code for 10-digit numbers
+    return `+234${cleaned}`;
+  } else if (cleaned.length === 11 && cleaned.startsWith('0')) {
+    // Replace leading 0 with +234
+    return `+234${cleaned.substring(1)}`;
+  } else if (cleaned.length === 13 && cleaned.startsWith('234')) {
+    // Add + to country code
+    return `+${cleaned}`;
+  } else if (cleaned.length === 14 && cleaned.startsWith('+234')) {
+    return cleaned;
+  }
+  
+  return phone; // Return original if format is unknown
+};
+
+export const validateEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+export const validatePassword = (password: string): {
+  isValid: boolean;
+  errors: string[];
+} => {
+  const errors: string[] = [];
+  
+  if (password.length < 8) {
+    errors.push('Password must be at least 8 characters long');
+  }
+  
+  if (!/(?=.*[a-z])/.test(password)) {
+    errors.push('Password must contain at least one lowercase letter');
+  }
+  
+  if (!/(?=.*[A-Z])/.test(password)) {
+    errors.push('Password must contain at least one uppercase letter');
+  }
+  
+  if (!/(?=.*\d)/.test(password)) {
+    errors.push('Password must contain at least one number');
+  }
+  
+  if (!/(?=.*[@$!%*?&])/.test(password)) {
+    errors.push('Password must contain at least one special character');
+  }
+  
+  return {
+    isValid: errors.length === 0,
+    errors,
+  };
+};
+
+export default apiClient;

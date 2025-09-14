@@ -6,6 +6,7 @@ import {
   Image,
   Dimensions,
   ImageBackground,
+  ActivityIndicator,
 } from 'react-native';
 import Colors from '../constants/Colors';
 import { Typography, Spacing } from '../constants/Layout';
@@ -18,11 +19,26 @@ interface SplashScreenProps {
 
 const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
   useEffect(() => {
-    const timer = setTimeout(() => {
+    console.log('SplashScreen mounted, setting up timers...');
+    
+    // Primary timer - 3 seconds
+    const primaryTimer = setTimeout(() => {
+      console.log('Primary splash timer finished, calling onFinish');
       onFinish();
-    }, 3000); // Show splash for 3 seconds
+    }, 3000);
 
-    return () => clearTimeout(timer);
+    // Fallback timer - 5 seconds (in case something goes wrong)
+    const fallbackTimer = setTimeout(() => {
+      console.log('Fallback splash timer triggered, calling onFinish');
+      onFinish();
+    }, 5000);
+
+    // Cleanup function
+    return () => {
+      console.log('SplashScreen unmounting, clearing timers');
+      clearTimeout(primaryTimer);
+      clearTimeout(fallbackTimer);
+    };
   }, [onFinish]);
 
   return (
@@ -53,6 +69,12 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
               style={styles.brandLogo}
               resizeMode="contain"
             />
+          </View>
+
+          {/* Simple loading indicator */}
+          <View style={styles.loadingSection}>
+            <ActivityIndicator size="small" color={Colors.accent} />
+            <Text style={styles.loadingText}>Loading...</Text>
           </View>
         </View>
       </ImageBackground>
@@ -113,6 +135,16 @@ const styles = StyleSheet.create({
     width: Math.min(width * 0.4, 150), // Responsive sizing
     height: Math.min(width * 0.1, 40),
     maxWidth: '80%', // Ensure it doesn't overflow
+  },
+  loadingSection: {
+    alignItems: 'center',
+    marginTop: height * 0.02,
+  },
+  loadingText: {
+    fontSize: Typography.fontSize.sm,
+    color: Colors.text.inverse,
+    marginTop: Spacing.xs,
+    opacity: 0.8,
   },
 });
 
