@@ -102,13 +102,15 @@ const CreateAccountScreen: React.FC = () => {
       <KeyboardAvoidingView 
         style={styles.keyboardAvoidingView}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 20}
+        enabled={true}
       >
         <ScrollView 
           style={styles.content} 
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={styles.scrollContent}
+          keyboardDismissMode="on-drag"
         >
           <View style={styles.formContainer}>
           <Text style={styles.title}>Create an Account</Text>
@@ -330,8 +332,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 24,
   },
   scrollContent: {
-    flexGrow: 1,
-    paddingBottom: Spacing.xxl, // Extra padding at bottom for keyboard
+    paddingBottom: Spacing.md, // Minimal bottom padding
   },
   formContainer: {
     paddingHorizontal: Spacing.lg,
