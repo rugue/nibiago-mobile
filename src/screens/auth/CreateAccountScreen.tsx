@@ -290,10 +290,11 @@ const CreateAccountScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.authHeader,
+    backgroundColor: Colors.white, // Changed to white to prevent green space
   },
   keyboardAvoidingView: {
     flex: 1,
+    backgroundColor: Colors.white, // White background to blend with form content
   },
   header: {
     flexDirection: 'row',
