@@ -152,7 +152,12 @@ const styles = StyleSheet.create({
   
   // Text styles
   text: {
-    fontWeight: Typography.fontWeight.semibold,
+    fontWeight: '700', // Bold for primary button
+    fontSize: 16,
+    lineHeight: 16 * 1.2, // 120% line height
+    letterSpacing: 0,
+    textAlign: 'center',
+    fontFamily: 'Nunito Sans',
   },
   smallText: {
     fontSize: Typography.fontSize.sm,

@@ -13,6 +13,12 @@ export const Colors = {
   buttonAccent: '#DCEC64', // Accent button background (Continue button)
   buttonAccentText: '#0B3438', // Accent button text
   
+  // Typography specific colors
+  titleColor: '#0B3438', // For main titles
+  signInLinkColor: '#B0C118', // For Sign In link
+  socialButtonText: '#333333', // For social button text
+  placeholderColor: '#929292', // For placeholder text
+  
   // Accent Colors
   accent: '#CDDC39', // Lime green from logo
   accentLight: '#F0F4C3',

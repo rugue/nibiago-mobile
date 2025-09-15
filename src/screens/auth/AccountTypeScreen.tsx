@@ -133,7 +133,7 @@ const AccountTypeScreen: React.FC = () => {
           <Button
             title={isLoading ? 'Processing...' : 'Continue'}
             onPress={handleContinue}
-            disabled={!selectedType || isLoading}
+            disabled={isLoading} // Only disable when loading
             style={styles.continueButton}
             variant="accent"
           />
@@ -146,7 +146,7 @@ const AccountTypeScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.primary,
+    backgroundColor: '#0B3438',
   },
   header: {
     flexDirection: 'row',
@@ -173,7 +173,9 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    backgroundColor: Colors.primary,
+    backgroundColor: '#0B3438',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
     paddingHorizontal: Spacing.lg,
     paddingTop: Spacing.xl,
   },
@@ -181,9 +183,13 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.xxl,
   },
   title: {
+    fontFamily: 'Nunito Sans',
+    fontWeight: '700', // Bold
     fontSize: 24,
-    fontWeight: 'bold',
-    color: Colors.white,
+    lineHeight: 24 * 1.2, // 120% line height
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: '#FFFFFF',
   },
   optionsContainer: {
     flex: 1,
@@ -196,8 +202,8 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.lg,
   },
   optionCardSelected: {
-    borderColor: Colors.accent,
-    backgroundColor: 'rgba(205, 220, 57, 0.1)',
+    borderColor: '#DCEC64',
+    backgroundColor: 'rgba(220, 236, 100, 0.1)',
   },
   optionContent: {
     padding: Spacing.lg,
@@ -218,30 +224,36 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   radioButtonSelected: {
-    borderColor: Colors.accent,
+    borderColor: '#DCEC64',
   },
   radioButtonInner: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: Colors.accent,
+    backgroundColor: '#DCEC64',
   },
   optionTextContainer: {
     flex: 1,
   },
   optionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: Colors.white,
+    fontFamily: 'Nunito Sans',
+    fontWeight: '700', // Bold
+    fontSize: 16,
+    lineHeight: 16 * 1.2, // 120% line height
+    letterSpacing: 0,
+    color: '#DCEC64',
     marginBottom: Spacing.xs,
   },
   optionTitleSelected: {
-    color: Colors.accent,
+    color: '#DCEC64',
   },
   optionDescription: {
+    fontFamily: 'Nunito Sans',
+    fontWeight: '400', // Regular
     fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.8)',
-    lineHeight: 20,
+    lineHeight: 14 * 1.5, // 150% line height
+    letterSpacing: 0,
+    color: '#FFFFFFE5', // White with 90% opacity (E5 = 229/255 ≈ 90%)
   },
   buttonContainer: {
     paddingBottom: Spacing.xl,

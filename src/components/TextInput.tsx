@@ -79,7 +79,7 @@ const TextInput = forwardRef<RNTextInput, CustomTextInputProps>(
             secureTextEntry={isPassword && !isPasswordVisible}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            placeholderTextColor={Colors.text.secondary}
+            placeholderTextColor={Colors.placeholderColor} // #929292
             selectionColor={Colors.primary}
             {...props}
           />
@@ -124,15 +124,18 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.md,
   },
   label: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: Colors.text.primary,
+    fontSize: 16,
+    fontWeight: '400', // Regular
+    color: Colors.black, // #000000
+    lineHeight: 16 * 1.5, // 150% line height
+    letterSpacing: 0,
+    fontFamily: 'Nunito Sans',
     marginBottom: Spacing.xs,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F8F9FA',
+    backgroundColor: '#F4F4F4',
     borderRadius: 25, // More oval/rounded input fields
     paddingHorizontal: Spacing.md,
     height: 50,
@@ -173,7 +176,11 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 16,
+    fontWeight: '400', // Regular
     color: Colors.text.primary,
+    lineHeight: 16 * 1.5, // 150% line height
+    letterSpacing: 0,
+    fontFamily: 'Nunito Sans',
     paddingVertical: 0, // Remove default padding
   },
   leftIcon: {

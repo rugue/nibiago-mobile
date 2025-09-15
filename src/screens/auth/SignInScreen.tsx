@@ -34,7 +34,7 @@ const SignInScreen: React.FC = () => {
     formState: { errors, isValid },
   } = useForm<SignInFormData>({
     resolver: yupResolver(signInSchema),
-    mode: 'onBlur',
+    mode: 'onChange', // Changed from 'onBlur' to 'onChange' for better responsiveness
     defaultValues: {
       email: '',
       password: '',
@@ -94,6 +94,8 @@ const SignInScreen: React.FC = () => {
         <ScrollView 
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
         >
           <View style={styles.formContainer}>
             <Text style={styles.title}>Sign In</Text>
@@ -168,24 +170,28 @@ const SignInScreen: React.FC = () => {
             >
               <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
             </TouchableOpacity>
-
-            {/* Sign In Button */}
-            <Button
-              title={isLoading ? 'Signing In...' : 'Get Food'}
-              onPress={handleSubmit(onSubmit)}
-              disabled={!isValid || isLoading}
-              style={styles.signInButton}
-            />
-
-            {/* Create Account Link */}
-            <View style={styles.createAccountContainer}>
-              <Text style={styles.createAccountText}>Not yet registered? </Text>
-              <TouchableOpacity onPress={handleCreateAccount}>
-                <Text style={styles.createAccountLink}>Create an Account</Text>
-              </TouchableOpacity>
-            </View>
           </View>
         </ScrollView>
+
+        {/* Bottom Section - Sticky */}
+        <View style={styles.bottomSection}>
+          {/* Sign In Button */}
+          <Button
+            title={isLoading ? 'Signing In...' : 'Get Food'}
+            onPress={handleSubmit(onSubmit)}
+            disabled={isLoading} // Only disable when loading, not when form is invalid
+            variant="primary"
+            style={styles.signInButton}
+          />
+
+          {/* Create Account Link */}
+          <View style={styles.createAccountContainer}>
+            <Text style={styles.createAccountText}>Not yet registered? </Text>
+            <TouchableOpacity onPress={handleCreateAccount}>
+              <Text style={styles.createAccountLink}>Create an Account</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -194,7 +200,7 @@ const SignInScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.authHeader, // Match header color for consistency
   },
   header: {
     flexDirection: 'row',
@@ -225,16 +231,24 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
   },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
   formContainer: {
     paddingHorizontal: Spacing.lg,
     paddingTop: Spacing.xl,
-    paddingBottom: Spacing.xxl,
   },
   title: {
+    fontFamily: 'Outfit',
+    fontWeight: '600', // SemiBold
     fontSize: 24,
-    fontWeight: 'bold',
-    color: Colors.text.primary,
+    lineHeight: 24 * 1.2, // 120% line height for better readability and no clipping
+    letterSpacing: 0,
     textAlign: 'center',
+    color: '#0B3438',
     marginBottom: Spacing.xl,
   },
   form: {
@@ -274,14 +288,19 @@ const styles = StyleSheet.create({
     color: Colors.primary,
     fontWeight: '500',
   },
+  bottomSection: {
+    paddingHorizontal: Spacing.lg,
+    paddingBottom: Spacing.xl,
+    paddingTop: Spacing.md,
+    backgroundColor: Colors.white,
+  },
   signInButton: {
-    marginBottom: Spacing.xl,
+    marginBottom: Spacing.lg,
   },
   createAccountContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: Spacing.lg,
   },
   createAccountText: {
     fontSize: 14,
@@ -289,7 +308,7 @@ const styles = StyleSheet.create({
   },
   createAccountLink: {
     fontSize: 14,
-    color: Colors.accent,
+    color: '#DCEC64',
     fontWeight: '600',
   },
 });

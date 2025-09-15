@@ -203,63 +203,68 @@ const EmailVerificationScreen: React.FC = () => {
         style={styles.content} 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <View style={styles.formContainer}>
-          <Text style={styles.title}>Verify your Email</Text>
-          <Text style={styles.subtitle}>
-            Enter 4-digit code the we just sent to your{'\n'}
-            email address {formatEmail(userEmail)}
-          </Text>
+        <View style={styles.scrollView}>
+          <View style={styles.formContainer}>
+            <Text style={styles.title}>Verify your Email</Text>
+            <Text style={styles.subtitle}>
+              Enter 4-digit code the we just sent to your{'\n'}
+              email address {formatEmail(userEmail)}
+            </Text>
 
-          {/* Code Input */}
-          <View style={styles.codeContainer}>
-            {code.map((digit, index) => (
-              <RNTextInput
-                key={index}
-                ref={(ref) => {
-                  inputRefs.current[index] = ref;
-                }}
-                style={[
-                  styles.codeInput,
-                  digit && styles.codeInputFilled,
-                ]}
-                value={digit}
-                onChangeText={(value) => handleCodeChange(value, index)}
-                onKeyPress={({ nativeEvent }) => handleKeyPress(nativeEvent.key, index)}
-                keyboardType="numeric"
-                maxLength={1}
-                textAlign="center"
-                selectTextOnFocus
-                autoFocus={index === 0}
-              />
-            ))}
+            {/* Code Input */}
+            <View style={styles.codeContainer}>
+              {code.map((digit, index) => (
+                <RNTextInput
+                  key={index}
+                  ref={(ref) => {
+                    inputRefs.current[index] = ref;
+                  }}
+                  style={[
+                    styles.codeInput,
+                    digit && styles.codeInputFilled,
+                  ]}
+                  value={digit}
+                  onChangeText={(value) => handleCodeChange(value, index)}
+                  onKeyPress={({ nativeEvent }) => handleKeyPress(nativeEvent.key, index)}
+                  keyboardType="numeric"
+                  maxLength={1}
+                  textAlign="center"
+                  selectTextOnFocus
+                  autoFocus={index === 0}
+                />
+              ))}
+            </View>
+
+            {/* Resend Code */}
+            <View style={styles.resendContainer}>
+              <Text style={styles.resendText}>Didn't receive the code? </Text>
+              <TouchableOpacity
+                onPress={handleResendCode}
+                disabled={resendCooldown > 0 || isResendLoading}
+              >
+                <Text style={[
+                  styles.resendLink,
+                  (resendCooldown > 0 || isResendLoading) && styles.resendLinkDisabled,
+                ]}>
+                  {resendCooldown > 0
+                    ? `Resend in ${resendCooldown}s`
+                    : isResendLoading
+                    ? 'Sending...'
+                    : 'Resend Code'
+                  }
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
+        </View>
 
-          {/* Resend Code */}
-          <View style={styles.resendContainer}>
-            <Text style={styles.resendText}>Didn't receive the code? </Text>
-            <TouchableOpacity
-              onPress={handleResendCode}
-              disabled={resendCooldown > 0 || isResendLoading}
-            >
-              <Text style={[
-                styles.resendLink,
-                (resendCooldown > 0 || isResendLoading) && styles.resendLinkDisabled,
-              ]}>
-                {resendCooldown > 0
-                  ? `Resend in ${resendCooldown}s`
-                  : isResendLoading
-                  ? 'Sending...'
-                  : 'Resend Code'
-                }
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Verify Button */}
+        {/* Bottom Section - Sticky */}
+        <View style={styles.bottomSection}>
           <Button
             title={isLoading ? 'Verifying...' : 'Verify Code'}
             onPress={() => handleVerify()}
-            disabled={code.some(digit => digit === '') || isLoading}
+            disabled={isLoading} // Only disable when loading
+            variant="primary"
             style={styles.verifyButton}
           />
         </View>
@@ -271,7 +276,7 @@ const EmailVerificationScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.authHeader, // Match header color for consistency
   },
   header: {
     flexDirection: 'row',
@@ -302,8 +307,10 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
   },
-  formContainer: {
+  scrollView: {
     flex: 1,
+  },
+  formContainer: {
     paddingHorizontal: Spacing.lg,
     paddingTop: Spacing.xl,
     alignItems: 'center',
@@ -360,9 +367,14 @@ const styles = StyleSheet.create({
   resendLinkDisabled: {
     color: Colors.text.muted,
   },
+  bottomSection: {
+    paddingHorizontal: Spacing.lg,
+    paddingBottom: Spacing.xl,
+    paddingTop: Spacing.md,
+    backgroundColor: Colors.white,
+  },
   verifyButton: {
-    width: '100%',
-    marginTop: Spacing.lg,
+    marginBottom: Spacing.lg,
   },
 });
 

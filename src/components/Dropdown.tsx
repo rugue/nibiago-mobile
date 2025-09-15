@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: '#F8F9FA',
-    borderRadius: 12,
+    borderRadius: 25, // More oval to match TextInput
     paddingHorizontal: Spacing.md,
     height: 50,
     borderWidth: 1,
