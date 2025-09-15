@@ -6,8 +6,10 @@ import { createStackNavigator } from '@react-navigation/stack';
 // Import screens
 import SplashScreen from '../screens/SplashScreen';
 import OnboardingScreen from '../screens/OnboardingScreen';
-import CreateAccountScreen from '../screens/auth/CreateAccountScreen';
 import AccountTypeScreen from '../screens/auth/AccountTypeScreen';
+import AccountTypeSelectionScreen from '../screens/auth/AccountTypeSelectionScreen';
+import FamilyRegistrationScreen from '../screens/auth/FamilyRegistrationScreen';
+import BusinessRegistrationScreen from '../screens/auth/BusinessRegistrationScreen';
 import EmailVerificationScreen from '../screens/auth/EmailVerificationScreen';
 import SignInScreen from '../screens/auth/SignInScreen';
 
@@ -15,10 +17,15 @@ import SignInScreen from '../screens/auth/SignInScreen';
 export type RootStackParamList = {
   Splash: undefined;
   Onboarding: undefined;
-  CreateAccount: undefined;
-  AccountType: undefined;
-  EmailVerification: { email?: string };
   SignIn: undefined;
+  AccountTypeSelection: undefined;
+  FamilyRegistration: undefined;
+  BusinessRegistration: undefined;
+  EmailVerification: {
+    email: string;
+    accountId: string;
+  };
+  AccountType: undefined; // Keep for backward compatibility
   Dashboard: undefined;
   Main: undefined;
 };
@@ -61,13 +68,17 @@ const AppNavigation: React.FC<AppNavigationProps> = ({
           headerShown: false,
           cardStyle: { backgroundColor: '#ffffff' },
         }}
-        initialRouteName={isAuthenticated ? 'Dashboard' : 'CreateAccount'}
+        initialRouteName={isAuthenticated ? 'Dashboard' : 'AccountTypeSelection'}
       >
         {/* Authentication Screens */}
-        <Stack.Screen name="CreateAccount" component={CreateAccountScreen} />
-        <Stack.Screen name="AccountType" component={AccountTypeScreen} />
+        <Stack.Screen name="AccountTypeSelection" component={AccountTypeSelectionScreen} />
+        <Stack.Screen name="FamilyRegistration" component={FamilyRegistrationScreen} />
+        <Stack.Screen name="BusinessRegistration" component={BusinessRegistrationScreen} />
         <Stack.Screen name="EmailVerification" component={EmailVerificationScreen} />
         <Stack.Screen name="SignIn" component={SignInScreen} />
+        
+        {/* Legacy Authentication Screens - Keep for backward compatibility */}
+        <Stack.Screen name="AccountType" component={AccountTypeScreen} />
 
         {/* Main App Screens */}
         <Stack.Screen name="Dashboard">

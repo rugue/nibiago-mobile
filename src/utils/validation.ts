@@ -1,7 +1,7 @@
 import * as yup from 'yup';
 
-// Create Account validation schema
-export const createAccountSchema = yup.object().shape({
+// Family Registration validation schema
+export const familyRegistrationSchema = yup.object().shape({
   firstName: yup
     .string()
     .required('First name is required')
@@ -48,6 +48,82 @@ export const createAccountSchema = yup.object().shape({
     .required('Please confirm your password')
     .oneOf([yup.ref('password')], 'Passwords must match'),
 });
+
+// Business Registration validation schema
+export const businessRegistrationSchema = yup.object().shape({
+  ownerFirstName: yup
+    .string()
+    .required('Owner first name is required')
+    .min(2, 'First name must be at least 2 characters')
+    .max(50, 'First name cannot exceed 50 characters')
+    .matches(/^[a-zA-Z\s]+$/, 'First name can only contain letters'),
+  
+  ownerLastName: yup
+    .string()
+    .required('Owner last name is required')
+    .min(2, 'Last name must be at least 2 characters')
+    .max(50, 'Last name cannot exceed 50 characters')
+    .matches(/^[a-zA-Z\s]+$/, 'Last name can only contain letters'),
+  
+  companyName: yup
+    .string()
+    .required('Company name is required')
+    .min(2, 'Company name must be at least 2 characters')
+    .max(100, 'Company name cannot exceed 100 characters'),
+  
+  category: yup
+    .string()
+    .required('Please select a business category'),
+  
+  companyAddress: yup
+    .string()
+    .required('Company address is required')
+    .min(10, 'Address must be at least 10 characters')
+    .max(200, 'Address cannot exceed 200 characters'),
+  
+  city: yup
+    .string()
+    .required('City is required')
+    .min(2, 'City must be at least 2 characters')
+    .max(50, 'City cannot exceed 50 characters'),
+  
+  roleInCompany: yup
+    .string()
+    .required('Role in company is required')
+    .min(2, 'Role must be at least 2 characters')
+    .max(100, 'Role cannot exceed 100 characters'),
+  
+  officePhoneNumber: yup
+    .string()
+    .required('Office phone number is required')
+    .matches(
+      /^(\+234|234|0)?[789]\d{9}$/,
+      'Please enter a valid Nigerian phone number'
+    ),
+  
+  officeEmailAddress: yup
+    .string()
+    .required('Office email is required')
+    .email('Please enter a valid email address')
+    .lowercase(),
+  
+  password: yup
+    .string()
+    .required('Password is required')
+    .min(8, 'Password must be at least 8 characters')
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+      'Password must contain uppercase, lowercase, number and special character'
+    ),
+  
+  confirmPassword: yup
+    .string()
+    .required('Please confirm your password')
+    .oneOf([yup.ref('password')], 'Passwords must match'),
+});
+
+// Keep existing createAccountSchema for backward compatibility
+export const createAccountSchema = familyRegistrationSchema;
 
 // Sign In validation schema
 export const signInSchema = yup.object().shape({

@@ -18,59 +18,60 @@ import { useNavigation } from '@react-navigation/native';
 
 import TextInput from '../../components/TextInput';
 import Button from '../../components/Button';
+import Dropdown from '../../components/Dropdown';
 import Colors from '../../constants/Colors';
 import { Spacing } from '../../constants/Layout';
-import { SignInFormData } from '../../types/auth';
-import { signInSchema } from '../../utils/validation';
+import { FamilyRegistrationFormData } from '../../types/auth';
+import { familyRegistrationSchema } from '../../utils/validation';
 import { AuthAPI } from '../../services/api';
+import { NIGERIAN_LOCATIONS } from '../../types/auth';
 
-const SignInScreen: React.FC = () => {
+const FamilyRegistrationScreen: React.FC = () => {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
 
   const {
     control,
     handleSubmit,
-    formState: { errors, isValid },
-  } = useForm<SignInFormData>({
-    resolver: yupResolver(signInSchema),
-    mode: 'onChange', // Changed from 'onBlur' to 'onChange' for better responsiveness
+    formState: { errors },
+    watch,
+  } = useForm<FamilyRegistrationFormData>({
+    resolver: yupResolver(familyRegistrationSchema),
+    mode: 'onBlur',
     defaultValues: {
+      firstName: '',
+      lastName: '',
       email: '',
+      phone: '',
+      location: '',
       password: '',
-      rememberMe: false,
+      confirmPassword: '',
     },
   });
 
-  const onSubmit = async (data: SignInFormData) => {
+  const onSubmit = async (data: FamilyRegistrationFormData) => {
     if (isLoading) return;
 
     setIsLoading(true);
     try {
-      await AuthAPI.login({
-        email: data.email,
-        password: data.password,
+      await AuthAPI.createAccount({
+        accountType: 'family',
+        familyData: data,
       });
       
-      // Navigate to main app
-      navigation.navigate('Dashboard' as never);
+      // Navigate to email verification
+      (navigation as any).navigate('EmailVerification', { 
+        email: data.email 
+      });
     } catch (error: any) {
       Alert.alert(
-        'Sign In Failed',
-        error.message || 'Invalid email or password. Please try again.',
+        'Registration Failed',
+        error.message || 'An error occurred during registration. Please try again.',
         [{ text: 'OK' }]
       );
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleCreateAccount = () => {
-    navigation.navigate('AccountTypeSelection' as never);
-  };
-
-  const handleForgotPassword = () => {
-    Alert.alert('Coming Soon', 'Password recovery will be available soon!');
   };
 
   return (
@@ -98,16 +99,50 @@ const SignInScreen: React.FC = () => {
           contentContainerStyle={styles.scrollContent}
         >
           <View style={styles.formContainer}>
-            <Text style={styles.title}>Sign In</Text>
+            <Text style={styles.title}>Create Family Account</Text>
 
             {/* Form Fields */}
             <View style={styles.form}>
               <Controller
                 control={control}
+                name="firstName"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    label="First Name"
+                    placeholder="Enter your first name"
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    error={errors.firstName?.message}
+                    autoCapitalize="words"
+                    autoCorrect={false}
+                  />
+                )}
+              />
+
+              <Controller
+                control={control}
+                name="lastName"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    label="Last Name"
+                    placeholder="Enter your last name"
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    error={errors.lastName?.message}
+                    autoCapitalize="words"
+                    autoCorrect={false}
+                  />
+                )}
+              />
+
+              <Controller
+                control={control}
                 name="email"
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
-                    label="Email address"
+                    label="Email Address"
                     placeholder="Enter your email address"
                     value={value}
                     onChangeText={onChange}
@@ -116,6 +151,37 @@ const SignInScreen: React.FC = () => {
                     keyboardType="email-address"
                     autoCapitalize="none"
                     autoCorrect={false}
+                  />
+                )}
+              />
+
+              <Controller
+                control={control}
+                name="phone"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    label="Phone Number"
+                    placeholder="Enter your phone number"
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    error={errors.phone?.message}
+                    keyboardType="phone-pad"
+                  />
+                )}
+              />
+
+              <Controller
+                control={control}
+                name="location"
+                render={({ field: { onChange, value } }) => (
+                  <Dropdown
+                    label="Location"
+                    placeholder="Select your location"
+                    value={value}
+                    onSelect={(option) => onChange(option.value)}
+                    options={NIGERIAN_LOCATIONS}
+                    error={errors.location?.message}
                   />
                 )}
               />
@@ -136,61 +202,34 @@ const SignInScreen: React.FC = () => {
                 )}
               />
 
-              {/* Remember Me Checkbox */}
               <Controller
                 control={control}
-                name="rememberMe"
-                render={({ field: { onChange, value } }) => (
-                  <TouchableOpacity
-                    style={styles.rememberMeContainer}
-                    onPress={() => onChange(!value)}
-                  >
-                    <View style={[
-                      styles.checkbox,
-                      value && styles.checkboxChecked,
-                    ]}>
-                      {value && (
-                        <Ionicons
-                          name="checkmark"
-                          size={16}
-                          color={Colors.white}
-                        />
-                      )}
-                    </View>
-                    <Text style={styles.rememberMeText}>Remember me</Text>
-                  </TouchableOpacity>
+                name="confirmPassword"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    label="Confirm Password"
+                    placeholder="Confirm your password"
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    error={errors.confirmPassword?.message}
+                    isPassword={true}
+                  />
                 )}
               />
             </View>
-
-            {/* Forgot Password */}
-            <TouchableOpacity
-              style={styles.forgotPasswordContainer}
-              onPress={handleForgotPassword}
-            >
-              <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-            </TouchableOpacity>
           </View>
         </ScrollView>
 
         {/* Bottom Section - Sticky */}
         <View style={styles.bottomSection}>
-          {/* Sign In Button */}
           <Button
-            title={isLoading ? 'Signing In...' : 'Get Food'}
+            title={isLoading ? 'Creating Account...' : 'Create Account'}
             onPress={handleSubmit(onSubmit)}
-            disabled={isLoading} // Only disable when loading, not when form is invalid
+            disabled={isLoading}
             variant="primary"
-            style={styles.signInButton}
+            style={styles.submitButton}
           />
-
-          {/* Create Account Link */}
-          <View style={styles.createAccountContainer}>
-            <Text style={styles.createAccountText}>Not yet registered? </Text>
-            <TouchableOpacity onPress={handleCreateAccount}>
-              <Text style={styles.createAccountLink}>Create an Account</Text>
-            </TouchableOpacity>
-          </View>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -200,7 +239,7 @@ const SignInScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.authHeader, // Match header color for consistency
+    backgroundColor: Colors.authHeader,
   },
   header: {
     flexDirection: 'row',
@@ -235,58 +274,24 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    flexGrow: 1,
+    paddingBottom: Spacing.md,
   },
   formContainer: {
     paddingHorizontal: Spacing.lg,
     paddingTop: Spacing.xl,
+    paddingBottom: Spacing.lg,
   },
   title: {
-    fontFamily: 'Outfit',
-    fontWeight: '600', // SemiBold
     fontSize: 24,
-    lineHeight: 24 * 1.2, // 120% line height for better readability and no clipping
-    letterSpacing: 0,
+    fontWeight: '700',
+    color: Colors.titleColor,
     textAlign: 'center',
-    color: '#0B3438',
+    lineHeight: 24 * 1.2,
     marginBottom: Spacing.xl,
+    fontFamily: 'Nunito Sans',
   },
   form: {
     marginBottom: Spacing.lg,
-  },
-  rememberMeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: Spacing.sm,
-    marginBottom: Spacing.md,
-  },
-  checkbox: {
-    width: 20,
-    height: 20,
-    borderWidth: 2,
-    borderColor: Colors.border.medium,
-    borderRadius: 4,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: Spacing.sm,
-    backgroundColor: Colors.white,
-  },
-  checkboxChecked: {
-    backgroundColor: Colors.primary,
-    borderColor: Colors.primary,
-  },
-  rememberMeText: {
-    fontSize: 14,
-    color: Colors.text.primary,
-  },
-  forgotPasswordContainer: {
-    alignItems: 'flex-end',
-    marginBottom: Spacing.xl,
-  },
-  forgotPasswordText: {
-    fontSize: 14,
-    color: Colors.primary,
-    fontWeight: '500',
   },
   bottomSection: {
     paddingHorizontal: Spacing.lg,
@@ -294,23 +299,9 @@ const styles = StyleSheet.create({
     paddingTop: Spacing.md,
     backgroundColor: Colors.white,
   },
-  signInButton: {
+  submitButton: {
     marginBottom: Spacing.lg,
-  },
-  createAccountContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  createAccountText: {
-    fontSize: 14,
-    color: Colors.text.secondary,
-  },
-  createAccountLink: {
-    fontSize: 14,
-    color: '#DCEC64',
-    fontWeight: '600',
   },
 });
 
-export default SignInScreen;
+export default FamilyRegistrationScreen;

@@ -154,10 +154,14 @@ const EmailVerificationScreen: React.FC = () => {
   const handleResendCode = async () => {
     if (resendCooldown > 0 || isResendLoading) return;
 
+    if (!userEmail) {
+      Alert.alert('Error', 'Email address not found. Please try again.');
+      return;
+    }
+
     setIsResendLoading(true);
     try {
-      // Call resend endpoint if your API has one
-      // await AuthAPI.resendVerificationCode({ email: userEmail });
+      await AuthAPI.resendVerificationCode({ email: userEmail });
       
       Alert.alert(
         'Code Resent',

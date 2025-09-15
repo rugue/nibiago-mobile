@@ -3,10 +3,10 @@ import * as SecureStore from 'expo-secure-store';
 import {
   CreateAccountRequest,
   CreateAccountResponse,
-  SelectAccountTypeRequest,
-  SelectAccountTypeResponse,
   VerifyEmailRequest,
   VerifyEmailResponse,
+  ResendVerificationCodeRequest,
+  ResendVerificationCodeResponse,
   LoginRequest,
   LoginResponse,
   ApiError
@@ -15,7 +15,6 @@ import {
 // Constants
 const BASE_URL = 'https://forage-stores-backend.onrender.com';
 const ACCESS_TOKEN_KEY = 'nibiago_access_token';
-const TEMP_TOKEN_KEY = 'nibiago_temp_token';
 const USER_KEY = 'nibiago_user';
 
 // Create axios instance
@@ -32,12 +31,9 @@ apiClient.interceptors.request.use(
   async (config) => {
     try {
       const accessToken = await SecureStore.getItemAsync(ACCESS_TOKEN_KEY);
-      const tempToken = await SecureStore.getItemAsync(TEMP_TOKEN_KEY);
       
       if (accessToken) {
         config.headers.Authorization = `Bearer ${accessToken}`;
-      } else if (tempToken) {
-        config.headers.Authorization = `Bearer ${tempToken}`;
       }
     } catch (error) {
       console.error('Error getting tokens from SecureStore:', error);
@@ -71,14 +67,6 @@ export const SecureStorage = {
     return await SecureStore.getItemAsync(ACCESS_TOKEN_KEY);
   },
 
-  async setTempToken(token: string): Promise<void> {
-    await SecureStore.setItemAsync(TEMP_TOKEN_KEY, token);
-  },
-
-  async getTempToken(): Promise<string | null> {
-    return await SecureStore.getItemAsync(TEMP_TOKEN_KEY);
-  },
-
   async setUser(user: any): Promise<void> {
     await SecureStore.setItemAsync(USER_KEY, JSON.stringify(user));
   },
@@ -92,10 +80,6 @@ export const SecureStorage = {
     await SecureStore.deleteItemAsync(ACCESS_TOKEN_KEY);
   },
 
-  async clearTempToken(): Promise<void> {
-    await SecureStore.deleteItemAsync(TEMP_TOKEN_KEY);
-  },
-
   async clearUser(): Promise<void> {
     await SecureStore.deleteItemAsync(USER_KEY);
   },
@@ -103,7 +87,6 @@ export const SecureStorage = {
   async clearAll(): Promise<void> {
     await Promise.all([
       this.clearAccessToken(),
-      this.clearTempToken(),
       this.clearUser(),
     ]);
   },
@@ -114,17 +97,7 @@ export const AuthAPI = {
   async createAccount(data: CreateAccountRequest): Promise<CreateAccountResponse> {
     const response = await apiClient.post<CreateAccountResponse>('/auth/create-account', data);
     
-    // Store temp token and user data
-    await SecureStorage.setTempToken(response.data.tempToken);
-    await SecureStorage.setUser(response.data.user);
-    
-    return response.data;
-  },
-
-  async selectAccountType(data: SelectAccountTypeRequest): Promise<SelectAccountTypeResponse> {
-    const response = await apiClient.post<SelectAccountTypeResponse>('/auth/select-account-type', data);
-    
-    // Update user data
+    // Store user data (no token returned, user needs email verification)
     await SecureStorage.setUser(response.data.user);
     
     return response.data;
@@ -133,11 +106,15 @@ export const AuthAPI = {
   async verifyEmail(data: VerifyEmailRequest): Promise<VerifyEmailResponse> {
     const response = await apiClient.post<VerifyEmailResponse>('/auth/verify-email-code', data);
     
-    // Clear temp token and store access token
-    await SecureStorage.clearTempToken();
+    // Store access token and updated user data after successful verification
     await SecureStorage.setAccessToken(response.data.accessToken);
     await SecureStorage.setUser(response.data.user);
     
+    return response.data;
+  },
+
+  async resendVerificationCode(data: ResendVerificationCodeRequest): Promise<ResendVerificationCodeResponse> {
+    const response = await apiClient.post<ResendVerificationCodeResponse>('/auth/resend-verification-code', data);
     return response.data;
   },
 

@@ -2,18 +2,15 @@
 
 export interface User {
   id: string;
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
-  phone: string;
-  location: string;
-  accountType: 'family' | 'business';
+  accountType: 'FAMILY' | 'BUSINESS';
   emailVerified: boolean;
-  createdAt: string;
-  updatedAt: string;
+  accountStatus: string;
 }
 
-export interface CreateAccountRequest {
+// Family Registration Data
+export interface FamilyData {
   firstName: string;
   lastName: string;
   email: string;
@@ -23,20 +20,34 @@ export interface CreateAccountRequest {
   confirmPassword: string;
 }
 
+// Business Registration Data
+export interface BusinessData {
+  ownerFirstName: string;
+  ownerLastName: string;
+  companyName: string;
+  category: string;
+  companyAddress: string;
+  city: string;
+  roleInCompany: string;
+  officePhoneNumber: string;
+  officeEmailAddress: string;
+  password: string;
+  confirmPassword: string;
+}
+
+// Updated Create Account Request (New unified structure)
+export interface CreateAccountRequest {
+  accountType: 'family' | 'business';
+  familyData?: FamilyData;
+  businessData?: BusinessData;
+}
+
 export interface CreateAccountResponse {
   user: User;
-  tempToken: string;
   message: string;
 }
 
-export interface SelectAccountTypeRequest {
-  accountType: 'family' | 'business';
-}
-
-export interface SelectAccountTypeResponse {
-  user: User;
-  message: string;
-}
+// Remove old SelectAccountTypeRequest/Response as account type is now selected first
 
 export interface VerifyEmailRequest {
   email: string;
@@ -46,6 +57,14 @@ export interface VerifyEmailRequest {
 export interface VerifyEmailResponse {
   user: User;
   accessToken: string;
+  message: string;
+}
+
+export interface ResendVerificationCodeRequest {
+  email: string;
+}
+
+export interface ResendVerificationCodeResponse {
   message: string;
 }
 
@@ -63,7 +82,6 @@ export interface LoginResponse {
 export interface AuthState {
   user: User | null;
   accessToken: string | null;
-  tempToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
 }
@@ -72,19 +90,32 @@ export interface AuthContextType {
   authState: AuthState;
   login: (email: string, password: string) => Promise<void>;
   createAccount: (data: CreateAccountRequest) => Promise<void>;
-  selectAccountType: (accountType: 'family' | 'business') => Promise<void>;
   verifyEmail: (email: string, code: string) => Promise<void>;
+  resendVerificationCode: (email: string) => Promise<void>;
   logout: () => Promise<void>;
-  clearTempToken: () => void;
 }
 
 // Form validation schemas types
-export interface CreateAccountFormData {
+export interface FamilyRegistrationFormData {
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
   location: string;
+  password: string;
+  confirmPassword: string;
+}
+
+export interface BusinessRegistrationFormData {
+  ownerFirstName: string;
+  ownerLastName: string;
+  companyName: string;
+  category: string;
+  companyAddress: string;
+  city: string;
+  roleInCompany: string;
+  officePhoneNumber: string;
+  officeEmailAddress: string;
   password: string;
   confirmPassword: string;
 }
@@ -150,4 +181,23 @@ export const NIGERIAN_LOCATIONS: LocationOption[] = [
   { label: 'Nasarawa State', value: 'nasarawa' },
   { label: 'Ebonyi State', value: 'ebonyi' },
   { label: 'Yobe State', value: 'yobe' }
+];
+
+// Business Categories
+export const BUSINESS_CATEGORIES: LocationOption[] = [
+  { label: 'Technology', value: 'technology' },
+  { label: 'Healthcare', value: 'healthcare' },
+  { label: 'Education', value: 'education' },
+  { label: 'Finance & Banking', value: 'finance' },
+  { label: 'Retail & E-commerce', value: 'retail' },
+  { label: 'Food & Beverage', value: 'food' },
+  { label: 'Manufacturing', value: 'manufacturing' },
+  { label: 'Construction', value: 'construction' },
+  { label: 'Transportation & Logistics', value: 'transportation' },
+  { label: 'Agriculture', value: 'agriculture' },
+  { label: 'Real Estate', value: 'real-estate' },
+  { label: 'Entertainment & Media', value: 'entertainment' },
+  { label: 'Professional Services', value: 'professional' },
+  { label: 'Non-Profit', value: 'non-profit' },
+  { label: 'Other', value: 'other' }
 ];
