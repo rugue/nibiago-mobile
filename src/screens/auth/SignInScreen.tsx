@@ -23,10 +23,12 @@ import { Spacing } from '../../constants/Layout';
 import { SignInFormData } from '../../types/auth';
 import { signInSchema } from '../../utils/validation';
 import { AuthAPI } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 
 const SignInScreen: React.FC = () => {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
 
   const {
     control,
@@ -47,13 +49,13 @@ const SignInScreen: React.FC = () => {
 
     setIsLoading(true);
     try {
-      await AuthAPI.login({
-        email: data.email,
-        password: data.password,
-      });
+      await login(data.email, data.password);
       
-      // Navigate to main app
-      navigation.navigate('Dashboard' as never);
+      // Navigate to main app - Home screen with reset to clear auth stack
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home' as never }],
+      });
     } catch (error: any) {
       Alert.alert(
         'Sign In Failed',

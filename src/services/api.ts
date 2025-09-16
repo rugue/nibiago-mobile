@@ -9,7 +9,11 @@ import {
   ResendVerificationCodeResponse,
   LoginRequest,
   LoginResponse,
-  ApiError
+  ApiError,
+  User,
+  WalletData,
+  OrderHistory,
+  ProductCategory
 } from '../types/auth';
 
 // Constants
@@ -170,6 +174,86 @@ export const AuthAPI = {
         user: null,
       };
     }
+  }
+};
+
+// Home Screen API calls
+export const HomeAPI = {
+  async getUserProfile(): Promise<User> {
+    const response = await apiClient.get<User>('/auth/profile');
+    await SecureStorage.setUser(response.data);
+    return response.data;
+  },
+
+  async getWalletBalance(): Promise<WalletData> {
+    const response = await apiClient.get('/wallets/my-wallet');
+    const walletData = response.data;
+    
+    // Calculate food safe percentage
+    const foodSafePercentage = walletData.foodSafe > 0 && walletData.totalBalance > 0 
+      ? Math.round((walletData.foodSafe / walletData.totalBalance) * 100)
+      : 0;
+    
+    return {
+      ...walletData,
+      foodSafePercentage
+    };
+  },
+
+  async getOrderHistory(page: number = 1, limit: number = 10): Promise<OrderHistory> {
+    const response = await apiClient.get('/orders', {
+      params: {
+        page,
+        limit,
+        sortBy: 'createdAt',
+        sortOrder: 'desc'
+      }
+    });
+    return response.data;
+  },
+
+  async getProductCategories(): Promise<ProductCategory[]> {
+    const response = await apiClient.get('/products', {
+      params: {
+        page: 1,
+        limit: 100
+      }
+    });
+    
+    // Extract unique categories from products
+    const products = response.data.products || [];
+    const categoryMap = new Map<string, ProductCategory>();
+    
+    products.forEach((product: any) => {
+      if (product.category && !categoryMap.has(product.category)) {
+        categoryMap.set(product.category, {
+          id: product.category.toLowerCase().replace(/\s+/g, '-'),
+          name: product.category,
+          image: product.images?.[0] || '',
+          productCount: 0
+        });
+      }
+    });
+    
+    // Count products per category
+    categoryMap.forEach((category) => {
+      category.productCount = products.filter(
+        (product: any) => product.category === category.name
+      ).length;
+    });
+    
+    return Array.from(categoryMap.values()).slice(0, 4); // Return first 4 categories for grid
+  },
+
+  async searchProducts(query: string, page: number = 1, limit: number = 20): Promise<any> {
+    const response = await apiClient.get('/products', {
+      params: {
+        search: query,
+        page,
+        limit
+      }
+    });
+    return response.data;
   }
 };
 

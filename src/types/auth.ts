@@ -5,8 +5,72 @@ export interface User {
   name: string;
   email: string;
   accountType: 'FAMILY' | 'BUSINESS';
+  location?: string;
+  profileImage?: string;
   emailVerified: boolean;
   accountStatus: string;
+}
+
+// Home Screen Types
+export interface WalletData {
+  foodMoney: number;
+  foodPoints: number;
+  foodSafe: number;
+  totalBalance: number;
+  status: 'active' | 'suspended' | 'frozen';
+  lastTransactionAt?: string;
+  foodSafePercentage: number;
+}
+
+export interface OrderItem {
+  productId: string;
+  quantity: number;
+  totalPrice: number;
+}
+
+export interface Order {
+  id: string;
+  orderNumber: string;
+  finalTotal: number;
+  status: string;
+  items: OrderItem[];
+  createdAt: string;
+  expectedDeliveryDate?: string;
+}
+
+export interface OrderHistory {
+  orders: Order[];
+  totalCount: number;
+  currentPage: number;
+  totalPages: number;
+}
+
+export interface ProductCategory {
+  id: string;
+  name: string;
+  image: string;
+  productCount: number;
+}
+
+export interface HomeScreenState {
+  user: {
+    id: string;
+    name: string;
+    location: string;
+    profileImage?: string;
+  };
+  wallet: WalletData;
+  orders: {
+    recentOrders: Order[];
+    totalOrders: number;
+  };
+  categories: ProductCategory[];
+  loading: {
+    wallet: boolean;
+    orders: boolean;
+    categories: boolean;
+  };
+  error: string | null;
 }
 
 // Family Registration Data

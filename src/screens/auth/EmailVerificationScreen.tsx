@@ -19,6 +19,7 @@ import Button from '../../components/Button';
 import Colors from '../../constants/Colors';
 import { Spacing } from '../../constants/Layout';
 import { AuthAPI, SecureStorage } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 
 interface RouteParams {
   email?: string;
@@ -28,6 +29,7 @@ const EmailVerificationScreen: React.FC = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { email } = (route.params as RouteParams) || {};
+  const { verifyEmail } = useAuth();
 
   const [code, setCode] = useState(['', '', '', '']);
   const [isLoading, setIsLoading] = useState(false);
@@ -111,10 +113,7 @@ const EmailVerificationScreen: React.FC = () => {
 
     setIsLoading(true);
     try {
-      await AuthAPI.verifyEmail({
-        email: userEmail,
-        code: verificationCode,
-      });
+      await verifyEmail(userEmail, verificationCode);
       
       // Success haptic feedback
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -127,8 +126,12 @@ const EmailVerificationScreen: React.FC = () => {
           {
             text: 'Continue',
             onPress: () => {
-              // Navigate to main app or dashboard
-              navigation.navigate('Dashboard' as never);
+              // The auth context has been updated, so we can navigate or let the app navigation handle it
+              // Since auth state is now updated to authenticated, we can navigate to Home
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'Home' as never }],
+              });
             },
           },
         ]

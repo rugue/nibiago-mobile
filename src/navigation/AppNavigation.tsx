@@ -12,6 +12,7 @@ import FamilyRegistrationScreen from '../screens/auth/FamilyRegistrationScreen';
 import BusinessRegistrationScreen from '../screens/auth/BusinessRegistrationScreen';
 import EmailVerificationScreen from '../screens/auth/EmailVerificationScreen';
 import SignInScreen from '../screens/auth/SignInScreen';
+import HomeScreen from '../screens/home/HomeScreen';
 
 // Navigation types
 export type RootStackParamList = {
@@ -26,8 +27,19 @@ export type RootStackParamList = {
     accountId: string;
   };
   AccountType: undefined; // Keep for backward compatibility
+  Home: undefined;
   Dashboard: undefined;
   Main: undefined;
+  // Home Screen Navigation Routes
+  Search: undefined;
+  SearchResults: { query: string };
+  Notifications: undefined;
+  Profile: undefined;
+  AddMoney: undefined;
+  OrderHistory: undefined;
+  FoodSafety: undefined;
+  CategoryProducts: { categoryId: string };
+  QuickOrder: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -68,7 +80,7 @@ const AppNavigation: React.FC<AppNavigationProps> = ({
           headerShown: false,
           cardStyle: { backgroundColor: '#ffffff' },
         }}
-        initialRouteName={isAuthenticated ? 'Dashboard' : 'AccountTypeSelection'}
+        initialRouteName={isAuthenticated ? 'Home' : 'AccountTypeSelection'}
       >
         {/* Authentication Screens */}
         <Stack.Screen name="AccountTypeSelection" component={AccountTypeSelectionScreen} />
@@ -81,6 +93,82 @@ const AppNavigation: React.FC<AppNavigationProps> = ({
         <Stack.Screen name="AccountType" component={AccountTypeScreen} />
 
         {/* Main App Screens */}
+        <Stack.Screen name="Home" component={HomeScreen} />
+        
+        {/* Home Screen Sub-screens */}
+        <Stack.Screen name="Search">
+          {() => (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <Text>Search Screen Coming Soon</Text>
+            </View>
+          )}
+        </Stack.Screen>
+        
+        <Stack.Screen name="SearchResults">
+          {() => (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <Text>Search Results Screen Coming Soon</Text>
+            </View>
+          )}
+        </Stack.Screen>
+        
+        <Stack.Screen name="Notifications">
+          {() => (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <Text>Notifications Screen Coming Soon</Text>
+            </View>
+          )}
+        </Stack.Screen>
+        
+        <Stack.Screen name="Profile">
+          {() => (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <Text>Profile Screen Coming Soon</Text>
+            </View>
+          )}
+        </Stack.Screen>
+        
+        <Stack.Screen name="AddMoney">
+          {() => (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <Text>Add Money Screen Coming Soon</Text>
+            </View>
+          )}
+        </Stack.Screen>
+        
+        <Stack.Screen name="OrderHistory">
+          {() => (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <Text>Order History Screen Coming Soon</Text>
+            </View>
+          )}
+        </Stack.Screen>
+        
+        <Stack.Screen name="FoodSafety">
+          {() => (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <Text>Food Safety Screen Coming Soon</Text>
+            </View>
+          )}
+        </Stack.Screen>
+        
+        <Stack.Screen name="CategoryProducts">
+          {() => (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <Text>Category Products Screen Coming Soon</Text>
+            </View>
+          )}
+        </Stack.Screen>
+        
+        <Stack.Screen name="QuickOrder">
+          {() => (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <Text>Quick Order Screen Coming Soon</Text>
+            </View>
+          )}
+        </Stack.Screen>
+        
+        {/* Legacy Screens - Keep for backward compatibility */}
         <Stack.Screen name="Dashboard">
           {() => (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -90,7 +178,6 @@ const AppNavigation: React.FC<AppNavigationProps> = ({
           )}
         </Stack.Screen>
         
-        {/* Legacy Main Screen */}
         <Stack.Screen name="Main">
           {() => (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
